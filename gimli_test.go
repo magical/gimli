@@ -19,16 +19,42 @@ var tests = []struct {
 
 func TestHash(t *testing.T) {
 	for _, tt := range tests {
+		input := []byte(tt.input)
 		want, err := hex.DecodeString(tt.hash)
 		if err != nil {
 			t.Error(err)
 			continue
 		}
 		got := make([]byte, 32)
-		hash([]byte(tt.input), got)
+		hash(input, got)
 		if !bytes.Equal(got, want) {
 			t.Errorf("got %x, want %x", got, want)
 			t.Errorf("input %q", tt.input)
+		}
+
+		// make sure odd-sized writes work
+		var h Hash
+		for i := 0; i < len(input); i++ {
+			h.Reset()
+			h.Write(input[:i])
+			h.Write(input[i:])
+			h.Read(got)
+			if !bytes.Equal(got, want) {
+				t.Errorf("%d/%d write: got %x, want %x", i, len(input)-i, got, want)
+				t.Errorf("input %q", tt.input)
+			}
+		}
+
+		// odd-sized reads
+		for i := 0; i < len(got); i++ {
+			h.Reset()
+			h.Write(input)
+			h.Read(got[:i])
+			h.Read(got[i:])
+			if !bytes.Equal(got, want) {
+				t.Errorf("%d/%d read: got %x, want %x", i, len(got)-i, got, want)
+				t.Errorf("input %q", tt.input)
+			}
 		}
 	}
 }

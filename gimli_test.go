@@ -63,6 +63,8 @@ func TestHash(t *testing.T) {
 func benchmark(b *testing.B, size int) {
 	var in = make([]byte, size)
 	var out = make([]byte, 32)
+	b.SetBytes(int64(size))
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		hash(in, out)
 	}

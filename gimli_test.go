@@ -32,3 +32,14 @@ func TestHash(t *testing.T) {
 		}
 	}
 }
+
+func benchmark(b *testing.B, size int) {
+	var in = make([]byte, size)
+	var out = make([]byte, 32)
+	for i := 0; i < b.N; i++ {
+		hash(in, out)
+	}
+}
+
+func BenchmarkHash8(b *testing.B)    { benchmark(b, 8) }
+func BenchmarkHash4096(b *testing.B) { benchmark(b, 4096) }

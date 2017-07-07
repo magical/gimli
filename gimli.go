@@ -1,6 +1,6 @@
 package gimli
 
-func permute(s *[48]uint8) {
+func permuteGeneric(s *[48]uint8) {
 	sx0 := uint32(s[0]) | uint32(s[1])<<8 | uint32(s[2])<<16 | uint32(s[3])<<24
 	sx1 := uint32(s[4]) | uint32(s[5])<<8 | uint32(s[6])<<16 | uint32(s[7])<<24
 	sx2 := uint32(s[8]) | uint32(s[9])<<8 | uint32(s[10])<<16 | uint32(s[11])<<24

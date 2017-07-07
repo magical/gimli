@@ -30,6 +30,7 @@ func TestHash(t *testing.T) {
 		if !bytes.Equal(got, want) {
 			t.Errorf("got %x, want %x", got, want)
 			t.Errorf("input %q", tt.input)
+			continue
 		}
 
 		// make sure odd-sized writes work

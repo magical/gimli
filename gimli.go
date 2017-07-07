@@ -1,9 +1,5 @@
 package gimli
 
-func rot(v uint32, n uint) uint32 {
-	return v<<n | v>>(32-n)
-}
-
 func permute(s *[48]uint8) {
 	sx0 := uint32(s[0]) | uint32(s[1])<<8 | uint32(s[2])<<16 | uint32(s[3])<<24
 	sx1 := uint32(s[4]) | uint32(s[5])<<8 | uint32(s[6])<<16 | uint32(s[7])<<24
@@ -25,14 +21,14 @@ func permute(s *[48]uint8) {
 		y0, y1, y2, y3 := sy0, sy1, sy2, sy3
 		z0, z1, z2, z3 := sz0, sz1, sz2, sz3
 
-		x0 = rot(x0, 24)
-		x1 = rot(x1, 24)
-		x2 = rot(x2, 24)
-		x3 = rot(x3, 24)
-		y0 = rot(y0, 9)
-		y1 = rot(y1, 9)
-		y2 = rot(y2, 9)
-		y3 = rot(y3, 9)
+		x0 = x0<<24 | x0>>8
+		x1 = x1<<24 | x1>>8
+		x2 = x2<<24 | x2>>8
+		x3 = x3<<24 | x3>>8
+		y0 = y0<<9 | y0>>23
+		y1 = y1<<9 | y1>>23
+		y2 = y2<<9 | y2>>23
+		y3 = y3<<9 | y3>>23
 
 		sz0 = x0 ^ (z0 << 1) ^ ((y0 & z0) << 2)
 		sz1 = x1 ^ (z1 << 1) ^ ((y1 & z1) << 2)

@@ -4,11 +4,26 @@ func rot(v uint32, n uint) uint32 {
 	return v<<n | v>>(32-n)
 }
 
-func permute(s *[12]uint32) {
+func permute(s *[48]uint8) {
+	sx0 := uint32(s[0]) | uint32(s[1])<<8 | uint32(s[2])<<16 | uint32(s[3])<<24
+	sx1 := uint32(s[4]) | uint32(s[5])<<8 | uint32(s[6])<<16 | uint32(s[7])<<24
+	sx2 := uint32(s[8]) | uint32(s[9])<<8 | uint32(s[10])<<16 | uint32(s[11])<<24
+	sx3 := uint32(s[12]) | uint32(s[13])<<8 | uint32(s[14])<<16 | uint32(s[15])<<24
+
+	sy0 := uint32(s[16]) | uint32(s[17])<<8 | uint32(s[18])<<16 | uint32(s[19])<<24
+	sy1 := uint32(s[20]) | uint32(s[21])<<8 | uint32(s[22])<<16 | uint32(s[23])<<24
+	sy2 := uint32(s[24]) | uint32(s[25])<<8 | uint32(s[26])<<16 | uint32(s[27])<<24
+	sy3 := uint32(s[28]) | uint32(s[29])<<8 | uint32(s[30])<<16 | uint32(s[31])<<24
+
+	sz0 := uint32(s[32]) | uint32(s[33])<<8 | uint32(s[34])<<16 | uint32(s[35])<<24
+	sz1 := uint32(s[36]) | uint32(s[37])<<8 | uint32(s[38])<<16 | uint32(s[39])<<24
+	sz2 := uint32(s[40]) | uint32(s[41])<<8 | uint32(s[42])<<16 | uint32(s[43])<<24
+	sz3 := uint32(s[44]) | uint32(s[45])<<8 | uint32(s[46])<<16 | uint32(s[47])<<24
+
 	for r := 24; r > 0; r-- {
-		x0, x1, x2, x3 := s[0], s[1], s[2], s[3]
-		y0, y1, y2, y3 := s[4], s[5], s[6], s[7]
-		z0, z1, z2, z3 := s[8], s[9], s[10], s[11]
+		x0, x1, x2, x3 := sx0, sx1, sx2, sx3
+		y0, y1, y2, y3 := sy0, sy1, sy2, sy3
+		z0, z1, z2, z3 := sz0, sz1, sz2, sz3
 
 		x0 = rot(x0, 24)
 		x1 = rot(x1, 24)
@@ -19,36 +34,51 @@ func permute(s *[12]uint32) {
 		y2 = rot(y2, 9)
 		y3 = rot(y3, 9)
 
-		s[8+0] = x0 ^ (z0 << 1) ^ ((y0 & z0) << 2)
-		s[8+1] = x1 ^ (z1 << 1) ^ ((y1 & z1) << 2)
-		s[8+2] = x2 ^ (z2 << 1) ^ ((y2 & z2) << 2)
-		s[8+3] = x3 ^ (z3 << 1) ^ ((y3 & z3) << 2)
+		sz0 = x0 ^ (z0 << 1) ^ ((y0 & z0) << 2)
+		sz1 = x1 ^ (z1 << 1) ^ ((y1 & z1) << 2)
+		sz2 = x2 ^ (z2 << 1) ^ ((y2 & z2) << 2)
+		sz3 = x3 ^ (z3 << 1) ^ ((y3 & z3) << 2)
 
-		s[4+0] = y0 ^ x0 ^ ((x0 | z0) << 1)
-		s[4+1] = y1 ^ x1 ^ ((x1 | z1) << 1)
-		s[4+2] = y2 ^ x2 ^ ((x2 | z2) << 1)
-		s[4+3] = y3 ^ x3 ^ ((x3 | z3) << 1)
+		sy0 = y0 ^ x0 ^ ((x0 | z0) << 1)
+		sy1 = y1 ^ x1 ^ ((x1 | z1) << 1)
+		sy2 = y2 ^ x2 ^ ((x2 | z2) << 1)
+		sy3 = y3 ^ x3 ^ ((x3 | z3) << 1)
 
-		s[0] = z0 ^ y0 ^ ((x0 & y0) << 3)
-		s[1] = z1 ^ y1 ^ ((x1 & y1) << 3)
-		s[2] = z2 ^ y2 ^ ((x2 & y2) << 3)
-		s[3] = z3 ^ y3 ^ ((x3 & y3) << 3)
+		sx0 = z0 ^ y0 ^ ((x0 & y0) << 3)
+		sx1 = z1 ^ y1 ^ ((x1 & y1) << 3)
+		sx2 = z2 ^ y2 ^ ((x2 & y2) << 3)
+		sx3 = z3 ^ y3 ^ ((x3 & y3) << 3)
 
 		if r%4 == 0 {
-			s[0], s[1], s[2], s[3] = s[1], s[0], s[3], s[2]
+			sx0, sx1, sx2, sx3 = sx1, sx0, sx3, sx2
 		} else if r%4 == 2 {
-			s[0], s[1], s[2], s[3] = s[2], s[3], s[0], s[1]
+			sx0, sx1, sx2, sx3 = sx2, sx3, sx0, sx1
 		}
 		if r%4 == 0 {
-			s[0] ^= 0x9e377900 ^ uint32(r)
+			sx0 ^= 0x9e377900 ^ uint32(r)
 		}
 	}
+
+	s[0], s[1], s[2], s[3] = byte(sx0), byte(sx0>>8), byte(sx0>>16), byte(sx0>>24)
+	s[4], s[5], s[6], s[7] = byte(sx1), byte(sx1>>8), byte(sx1>>16), byte(sx1>>24)
+	s[8], s[9], s[10], s[11] = byte(sx2), byte(sx2>>8), byte(sx2>>16), byte(sx2>>24)
+	s[12], s[13], s[14], s[15] = byte(sx3), byte(sx3>>8), byte(sx3>>16), byte(sx3>>24)
+
+	s[16], s[17], s[18], s[19] = byte(sy0), byte(sy0>>8), byte(sy0>>16), byte(sy0>>24)
+	s[20], s[21], s[22], s[23] = byte(sy1), byte(sy1>>8), byte(sy1>>16), byte(sy1>>24)
+	s[24], s[25], s[26], s[27] = byte(sy2), byte(sy2>>8), byte(sy2>>16), byte(sy2>>24)
+	s[28], s[29], s[30], s[31] = byte(sy3), byte(sy3>>8), byte(sy3>>16), byte(sy3>>24)
+
+	s[32], s[33], s[34], s[35] = byte(sz0), byte(sz0>>8), byte(sz0>>16), byte(sz0>>24)
+	s[36], s[37], s[38], s[39] = byte(sz1), byte(sz1>>8), byte(sz1>>16), byte(sz1>>24)
+	s[40], s[41], s[42], s[43] = byte(sz2), byte(sz2>>8), byte(sz2>>16), byte(sz2>>24)
+	s[44], s[45], s[46], s[47] = byte(sz3), byte(sz3>>8), byte(sz3>>16), byte(sz3>>24)
 }
 
 const rate = 16
 
 func hash(in []byte, out []byte) {
-	var state [12]uint32
+	var state [48]uint8
 	var blockSize int
 
 	// absorb
@@ -59,7 +89,7 @@ func hash(in []byte, out []byte) {
 		}
 
 		for i := 0; i < blockSize; i++ {
-			state[i/4] ^= uint32(in[i]) << (8 * (uint(i) % 4))
+			state[i] ^= in[i]
 		}
 		in = in[blockSize:]
 
@@ -70,8 +100,8 @@ func hash(in []byte, out []byte) {
 	}
 
 	// pad
-	state[blockSize/4] ^= 0x1f << (8 * (uint(blockSize) % 4))
-	state[(rate-1)/4] ^= 0x80 << (8 * ((rate - 1) % 4))
+	state[blockSize] ^= 0x1f
+	state[rate-1] ^= 0x80
 
 	permute(&state)
 
@@ -81,7 +111,7 @@ func hash(in []byte, out []byte) {
 			blockSize = rate
 		}
 		for i := 0; i < blockSize; i++ {
-			out[i] = byte(state[i/4] >> (8 * (uint(i) % 4)))
+			out[i] = state[i]
 		}
 		out = out[blockSize:]
 		if len(out) > 0 {

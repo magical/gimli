@@ -3,8 +3,12 @@ package gimli
 import (
 	"bytes"
 	"encoding/hex"
+	"io"
 	"testing"
 )
+
+var _ io.Writer = &Hash{}
+var _ io.Reader = &Hash{}
 
 var tests = []struct {
 	input string

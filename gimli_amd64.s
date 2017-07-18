@@ -2,12 +2,13 @@
 
 #define round(x, y, z, t, u, v) \
 	MOVO	x, t		\
-	MOVO	y, u		\
 	PSLLL	$24, x		\
-	PSLLL	$9, y		\
 	PSRLL	$8, t		\
-	PSRLL	$23, u		\
 	PXOR	t, x		\
+				\
+	MOVO	y, u		\
+	PSLLL	$9, y		\
+	PSRLL	$23, u		\
 	PXOR	u, y		\
 				\
 	MOVO	x, t		\

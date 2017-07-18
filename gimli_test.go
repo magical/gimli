@@ -3,8 +3,12 @@ package gimli
 import (
 	"bytes"
 	"encoding/hex"
+	"io"
 	"testing"
 )
+
+var _ io.Writer = &Hash{}
+var _ io.Reader = &Hash{}
 
 var tests = []struct {
 	input string
@@ -71,4 +75,13 @@ func benchmark(b *testing.B, size int) {
 }
 
 func BenchmarkHash8(b *testing.B)    { benchmark(b, 8) }
-func BenchmarkHash4096(b *testing.B) { benchmark(b, 4096) }
+func BenchmarkHash1024(b *testing.B) { benchmark(b, 1024) }
+func BenchmarkHash8192(b *testing.B) { benchmark(b, 8129) }
+
+func BenchmarkPermute(b *testing.B) {
+	var s [48]byte
+	b.SetBytes(int64(len(s)))
+	for i := 0; i < b.N; i++ {
+		permute(&s)
+	}
+}

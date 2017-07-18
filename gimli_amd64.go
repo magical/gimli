@@ -1,5 +1,8 @@
 package gimli
 
+//go:noescape
 func permuteAsm(s *[48]byte)
 
-var permute = permuteAsm
+func permute(s *[48]byte) { permuteAsm(s) }
+
+//var permute = permuteAsm

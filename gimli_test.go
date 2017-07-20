@@ -7,8 +7,8 @@ import (
 	"testing"
 )
 
-var _ io.Writer = &Hash{}
-var _ io.Reader = &Hash{}
+var _ io.Writer = &Sponge{}
+var _ io.Reader = &Sponge{}
 
 var tests = []struct {
 	input string
@@ -38,12 +38,12 @@ func TestHash(t *testing.T) {
 		}
 
 		// make sure odd-sized writes work
-		var h Hash
+		var s Sponge
 		for i := 0; i < len(input); i++ {
-			h.Reset()
-			h.Write(input[:i])
-			h.Write(input[i:])
-			h.Read(got)
+			s.Reset()
+			s.Write(input[:i])
+			s.Write(input[i:])
+			s.Read(got)
 			if !bytes.Equal(got, want) {
 				t.Errorf("%d/%d write: got %x, want %x", i, len(input)-i, got, want)
 				t.Errorf("input %q", tt.input)
@@ -52,10 +52,10 @@ func TestHash(t *testing.T) {
 
 		// odd-sized reads
 		for i := 0; i < len(got); i++ {
-			h.Reset()
-			h.Write(input)
-			h.Read(got[:i])
-			h.Read(got[i:])
+			s.Reset()
+			s.Write(input)
+			s.Read(got[:i])
+			s.Read(got[i:])
 			if !bytes.Equal(got, want) {
 				t.Errorf("%d/%d read: got %x, want %x", i, len(got)-i, got, want)
 				t.Errorf("input %q", tt.input)

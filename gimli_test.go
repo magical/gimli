@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"io"
 	"testing"
+	"testing/quick"
 )
 
 var _ io.Writer = &Sponge{}
@@ -61,6 +62,17 @@ func TestHash(t *testing.T) {
 				t.Errorf("input %q", tt.input)
 			}
 		}
+	}
+}
+
+func TestAsm(t *testing.T) {
+	if !useAsm {
+		t.Skip("skipping because no asm implementation is available")
+	}
+	f := func(s [48]byte) [48]byte { permute(&s); return s }
+	g := func(s [48]byte) [48]byte { permuteGeneric(&s); return s }
+	if err := quick.CheckEqual(f, g, nil); err != nil {
+		t.Error(err)
 	}
 }
 

@@ -88,3 +88,11 @@ func benchmark(b *testing.B, size int) {
 
 func BenchmarkHash8(b *testing.B)    { benchmark(b, 8) }
 func BenchmarkHash4096(b *testing.B) { benchmark(b, 4096) }
+
+func BenchmarkPermute(b *testing.B) {
+	var s [48]byte
+	b.SetBytes(int64(len(s)))
+	for i := 0; i < b.N; i++ {
+		permute(&s)
+	}
+}

@@ -38,7 +38,7 @@ DATA	counter<>+0(SB)/8, $4
 DATA	counter<>+8(SB)/8, $0
 GLOBL	counter<>(SB), (NOPTR+RODATA), $16
 
-TEXT	·permuteAsm(SB), $40-8
+TEXT	·permute(SB), $0-8
 	MOVQ	s+0(FP), AX
 
 	MOVOU	(AX), X0

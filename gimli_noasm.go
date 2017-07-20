@@ -2,4 +2,6 @@
 
 package gimli
 
-var permute = permuteGeneric
+const useAsm = true
+
+func permute(s *[48]byte) { permuteGeneric(s) }

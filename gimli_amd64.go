@@ -1,5 +1,6 @@
 package gimli
 
-func permuteAsm(s *[48]byte)
+const useAsm = true
 
-var permute = permuteAsm
+//go:noescape
+func permute(s *[48]byte)

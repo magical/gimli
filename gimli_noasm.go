@@ -2,6 +2,6 @@
 
 package gimli
 
-const useAsm = true
+const useAsm = false
 
 func permute(s *[48]byte) { permuteGeneric(s) }
